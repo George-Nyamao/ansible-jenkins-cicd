@@ -468,7 +468,7 @@ Distribute builds across multiple agents for parallel execution.
 [![GitHub Discussions](https://img.shields.io/badge/GitHub-Discussions-181717?style=flat&logo=github)](https://github.com/George-Nyamao/ansible-jenkins-cicd/discussions)
 
 - **Issues**: [GitHub Issues](https://github.com/George-Nyamao/ansible-jenkins-cicd/issues)
-- **Documentation**: See DEPLOYMENT.md for detailed guide
+- **Documentation**: See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed guide
 - **Jenkins Documentation**: [jenkins.io](https://www.jenkins.io/doc/)
 
 ## Changelog
