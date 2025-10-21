@@ -1,0 +1,93 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job">
+  <description>Ansible-managed CI/CD Pipeline</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+      <triggers>
+        <hudson.triggers.SCMTrigger>
+          <spec>H/5 * * * *</spec>
+          <ignorePostCommitHooks>false</ignorePostCommitHooks>
+        </hudson.triggers.SCMTrigger>
+      </triggers>
+    </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps">
+    <script>
+pipeline {
+    agent any
+    
+    environment {
+        APP_NAME = '{{ app_name | default("myapp") }}'
+        DEPLOY_ENV = '{{ deploy_environment | default("production") }}'
+    }
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', 
+                    url: '{{ git_repo_url | default("https://github.com/user/repo.git") }}'
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                echo 'Building application...'
+                sh '''
+                    echo "Building ${APP_NAME}"
+                    # Add your build commands here
+                '''
+            }
+        }
+        
+        stage('Test') {
+            steps {
+                echo 'Running tests...'
+                sh '''
+                    echo "Testing ${APP_NAME}"
+                    # Add your test commands here
+                '''
+            }
+        }
+        
+        stage('Code Quality') {
+            steps {
+                echo 'Running code quality checks...'
+                sh '''
+                    echo "Quality checks for ${APP_NAME}"
+                    # Add SonarQube or similar tools here
+                '''
+            }
+        }
+        
+        stage('Deploy') {
+            steps {
+                echo 'Deploying application...'
+                sh '''
+                    echo "Deploying ${APP_NAME} to ${DEPLOY_ENV}"
+                    # Add deployment commands here
+                '''
+            }
+        }
+    }
+    
+    post {
+        success {
+            echo 'Pipeline succeeded!'
+            // Add notification here (email, Slack, etc.)
+        }
+        failure {
+            echo 'Pipeline failed!'
+            // Add notification here
+        }
+        always {
+            cleanWs()
+        }
+    }
+}
+    </script>
+    <sandbox>true</sandbox>
+  </definition>
+  <triggers/>
+  <disabled>false</disabled>
+</flow-definition>

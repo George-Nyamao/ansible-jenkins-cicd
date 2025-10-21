@@ -1,0 +1,63 @@
+---
+- name: Create jobs directory structure
+  file:
+    path: "/var/lib/jenkins/jobs/{{ item }}"
+    state: directory
+    owner: jenkins
+    group: jenkins
+    mode: '0755'
+  loop:
+    - sample-pipeline
+    - sample-freestyle
+    - pipelines
+  tags: jobs
+
+- name: Deploy sample pipeline job
+  template:
+    src: pipeline-job.xml.j2
+    dest: "/var/lib/jenkins/jobs/sample-pipeline/config.xml"
+    owner: jenkins
+    group: jenkins
+    mode: '0644'
+  notify: reload jenkins
+  tags: jobs
+
+- name: Create freestyle job
+  copy:
+    content: |
+      <?xml version='1.1' encoding='UTF-8'?>
+      <project>
+        <description>Sample freestyle job deployed by Ansible</description>
+        <keepDependencies>false</keepDependencies>
+        <properties/>
+        <scm class="hudson.scm.NullSCM"/>
+        <canRoam>true</canRoam>
+        <disabled>false</disabled>
+        <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+        <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+        <triggers/>
+        <concurrentBuild>false</concurrentBuild>
+        <builders>
+          <hudson.tasks.Shell>
+            <command>#!/bin/bash
+      echo "=========================================="
+      echo "Hello from Ansible-deployed Jenkins job!"
+      echo "=========================================="
+      echo "Job Name: $JOB_NAME"
+      echo "Build Number: $BUILD_NUMBER"
+      echo "Workspace: $WORKSPACE"
+      echo "=========================================="
+      date
+      uname -a
+      echo "=========================================="
+            </command>
+          </hudson.tasks.Shell>
+        </builders>
+        <publishers/>
+        <buildWrappers/>
+      </project>
+    dest: /var/lib/jenkins/jobs/sample-freestyle/config.xml
+    owner: jenkins
+    group: jenkins
+    mode: '0644'
+  tags: jobs

@@ -1,0 +1,119 @@
+---
+- name: Install Java
+  apt:
+    name:
+      - openjdk-11-jdk
+      - openjdk-11-jre
+      - fontconfig
+      - gnupg
+      - ca-certificates
+    state: present
+    update_cache: yes
+  tags: jenkins, java
+
+- name: Add Jenkins repository key
+  apt_key:
+    url: https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+    state: present
+  tags: jenkins
+
+- name: Add Jenkins repository
+  apt_repository:
+    repo: 'deb https://pkg.jenkins.io/debian-stable binary/'
+    state: present
+    filename: jenkins
+  tags: jenkins
+
+- name: Install Jenkins
+  apt:
+    name: jenkins
+    state: present
+    update_cache: yes
+  tags: jenkins
+
+- name: Create Jenkins directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: jenkins
+    group: jenkins
+    mode: '0755'
+  loop:
+    - /var/lib/jenkins/init.groovy.d
+    - /var/lib/jenkins/jobs
+    - /var/backups/jenkins
+  tags: jenkins
+
+- name: Start and enable Jenkins
+  systemd:
+    name: jenkins
+    state: started
+    enabled: yes
+  tags: jenkins
+
+- name: Wait for Jenkins to start
+  wait_for:
+    port: 8080
+    delay: 10
+    timeout: 300
+  tags: jenkins
+
+- name: Check if Jenkins initial admin password exists
+  stat:
+    path: /var/lib/jenkins/secrets/initialAdminPassword
+  register: jenkins_admin_password_file
+  tags: jenkins
+
+- name: Get Jenkins admin password
+  slurp:
+    src: /var/lib/jenkins/secrets/initialAdminPassword
+  register: jenkins_admin_password
+  when: jenkins_admin_password_file.stat.exists
+  changed_when: false
+  tags: jenkins
+
+- name: Display admin password
+  debug:
+    msg: "Jenkins admin password: {{ jenkins_admin_password.content | b64decode }}"
+  when: jenkins_admin_password_file.stat.exists
+  tags: jenkins
+
+- name: Save admin password to file
+  copy:
+    content: "{{ jenkins_admin_password.content | b64decode }}"
+    dest: /tmp/jenkins_admin_password.txt
+    mode: '0600'
+  when: jenkins_admin_password_file.stat.exists
+  tags: jenkins
+
+- name: Install Jenkins CLI
+  get_url:
+    url: http://localhost:8080/jnlpJars/jenkins-cli.jar
+    dest: /opt/jenkins-cli.jar
+    mode: '0644'
+  retries: 5
+  delay: 10
+  tags: jenkins
+
+- name: Configure firewall for Jenkins
+  ufw:
+    rule: allow
+    port: '8080'
+    proto: tcp
+  tags: jenkins, firewall
+
+- name: Create Jenkins backup script
+  template:
+    src: jenkins_backup.sh.j2
+    dest: /usr/local/bin/jenkins_backup.sh
+    mode: '0750'
+  tags: jenkins, backup
+
+- name: Schedule Jenkins backups
+  cron:
+    name: "Jenkins daily backup"
+    minute: "0"
+    hour: "2"
+    job: "/usr/local/bin/jenkins_backup.sh"
+    state: present
+  tags: jenkins, backup

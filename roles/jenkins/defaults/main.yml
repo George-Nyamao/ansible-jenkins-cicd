@@ -1,0 +1,13 @@
+---
+jenkins_url: "http://localhost:8080"
+jenkins_admin_user: "admin"
+jenkins_admin_email: "admin@example.com"
+jenkins_num_executors: 2
+backup_dir: "/var/backups/jenkins"
+backup_retention_days: 7
+smtp_host: "localhost"
+smtp_port: 25
+smtp_use_ssl: false
+github_username: ""
+github_token: ""
+docker_hub_token: ""

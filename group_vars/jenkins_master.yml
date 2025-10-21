@@ -1,0 +1,3 @@
+---
+jenkins_master: true
+jenkins_install_plugins: true

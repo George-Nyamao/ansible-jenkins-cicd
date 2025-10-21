@@ -1,0 +1,10 @@
+---
+- name: reload jenkins
+  uri:
+    url: "http://localhost:8080/reload"
+    method: POST
+    user: admin
+    password: "{{ jenkins_admin_password_actual | default('admin') }}"
+    force_basic_auth: yes
+    status_code: [200, 302]
+  ignore_errors: yes

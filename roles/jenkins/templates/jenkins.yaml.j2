@@ -1,0 +1,56 @@
+jenkins:
+  systemMessage: "Jenkins managed by Ansible"
+  numExecutors: {{ jenkins_num_executors | default(2) }}
+  mode: NORMAL
+  scmCheckoutRetryCount: 3
+  labelString: "master"
+  
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+        - id: "{{ jenkins_admin_user | default('admin') }}"
+          password: "{{ jenkins_admin_password }}"
+
+  authorizationStrategy:
+    globalMatrix:
+      permissions:
+        - "Overall/Administer:{{ jenkins_admin_user | default('admin') }}"
+        - "Overall/Read:authenticated"
+
+  remotingSecurity:
+    enabled: true
+
+  crumbIssuer:
+    standard:
+      excludeClientIPFromCrumb: false
+
+unclassified:
+  location:
+    url: "{{ jenkins_url | default('http://localhost:8080') }}"
+    adminAddress: "{{ jenkins_admin_email | default('admin@example.com') }}"
+
+  gitHubPluginConfig:
+    hookUrl: "{{ jenkins_url | default('http://localhost:8080') }}/github-webhook/"
+
+  mailer:
+    smtpHost: "{{ smtp_host | default('localhost') }}"
+    smtpPort: {{ smtp_port | default(25) }}
+    charset: "UTF-8"
+    useSsl: {{ smtp_use_ssl | default(false) | lower }}
+    
+credentials:
+  system:
+    domainCredentials:
+      - credentials:
+          - usernamePassword:
+              scope: GLOBAL
+              id: "github-credentials"
+              username: "{{ github_username | default('') }}"
+              password: "{{ github_token | default('') }}"
+              description: "GitHub credentials"
+          - string:
+              scope: GLOBAL
+              id: "docker-hub-token"
+              secret: "{{ docker_hub_token | default('') }}"
+              description: "Docker Hub token"

@@ -1,0 +1,39 @@
+---
+- name: "Jenkins CI/CD Infrastructure Setup"
+  hosts: jenkins_master
+  become: yes
+  
+  pre_tasks:
+    - name: Display deployment information
+      debug:
+        msg:
+          - "=========================================="
+          - "Jenkins CI/CD Deployment Starting"
+          - "=========================================="
+          - "Target: {{ inventory_hostname }}"
+          - "IP: {{ ansible_default_ipv4.address }}"
+          - "=========================================="
+      tags: always
+
+  roles:
+    - role: jenkins
+      tags: jenkins
+    - role: jenkins-plugins
+      tags: plugins
+    - role: jenkins-jobs
+      tags: jobs
+
+  post_tasks:
+    - name: Display Jenkins access information
+      debug:
+        msg:
+          - "=========================================="
+          - "✅ Jenkins Deployed Successfully!"
+          - "=========================================="
+          - "Access Jenkins at:"
+          - "http://{{ ansible_default_ipv4.address }}:8080"
+          - ""
+          - "Initial admin password saved to:"
+          - "/tmp/jenkins_admin_password.txt"
+          - "=========================================="
+      tags: always

@@ -1,0 +1,60 @@
+---
+- name: Wait for Jenkins to be ready
+  uri:
+    url: "http://localhost:8080/api/json"
+    status_code: [200, 403]
+  register: jenkins_service
+  until: jenkins_service.status in [200, 403]
+  retries: 30
+  delay: 10
+  tags: plugins
+
+- name: Install required plugins
+  jenkins_plugin:
+    name: "{{ item }}"
+    url: "http://localhost:8080"
+    url_username: admin
+    url_password: "{{ jenkins_admin_password_actual }}"
+    state: present
+    timeout: 120
+  loop:
+    - git
+    - workflow-aggregator
+    - pipeline-stage-view
+    - docker-workflow
+    - docker-plugin
+    - ansible
+    - blueocean
+    - credentials
+    - credentials-binding
+    - ssh-slaves
+    - job-dsl
+    - configuration-as-code
+    - matrix-auth
+    - github
+    - github-branch-source
+    - pipeline-github-lib
+    - slack
+    - email-ext
+    - build-timeout
+    - timestamper
+    - ws-cleanup
+  register: plugin_result
+  retries: 3
+  delay: 10
+  tags: plugins
+
+- name: Restart Jenkins if plugins were installed
+  systemd:
+    name: jenkins
+    state: restarted
+  when: plugin_result.changed
+  tags: plugins
+
+- name: Wait for Jenkins to be ready after restart
+  wait_for:
+    port: 8080
+    delay: 30
+    timeout: 300
+  when: plugin_result.changed
+  tags: plugins

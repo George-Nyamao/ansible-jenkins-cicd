@@ -1,0 +1,20 @@
+---
+# Jenkins configuration
+jenkins_url: "http://localhost:8080"
+jenkins_admin_user: "admin"
+jenkins_admin_email: "admin@example.com"
+jenkins_num_executors: 2
+
+# Application settings
+app_name: "myapp"
+git_repo_url: "https://github.com/user/repo.git"
+deploy_environment: "production"
+
+# Backup settings
+backup_dir: "/var/backups/jenkins"
+backup_retention_days: 7
+
+# Email settings
+smtp_host: "localhost"
+smtp_port: 25
+smtp_use_ssl: false

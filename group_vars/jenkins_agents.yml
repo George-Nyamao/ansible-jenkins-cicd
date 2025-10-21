@@ -1,0 +1,5 @@
+---
+jenkins_agent: true
+agent_remote_fs: "/var/jenkins"
+agent_executors: 2
+agent_labels: "docker linux"

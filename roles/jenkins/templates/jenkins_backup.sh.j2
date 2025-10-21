@@ -1,0 +1,39 @@
+#!/bin/bash
+# Jenkins Backup Script - Managed by Ansible
+
+JENKINS_HOME="/var/lib/jenkins"
+BACKUP_DIR="{{ backup_dir | default('/var/backups/jenkins') }}"
+DATE=$(date +%Y%m%d_%H%M%S)
+BACKUP_FILE="${BACKUP_DIR}/jenkins_backup_${DATE}.tar.gz"
+RETENTION_DAYS={{ backup_retention_days | default(7) }}
+
+# Create backup directory
+mkdir -p ${BACKUP_DIR}
+
+# Stop Jenkins for consistent backup
+systemctl stop jenkins
+
+# Create backup
+tar -czf ${BACKUP_FILE} \
+    --exclude='${JENKINS_HOME}/war' \
+    --exclude='${JENKINS_HOME}/cache' \
+    --exclude='${JENKINS_HOME}/workspace/*/target' \
+    -C ${JENKINS_HOME} .
+
+# Start Jenkins
+systemctl start jenkins
+
+# Remove old backups
+find ${BACKUP_DIR} -name "jenkins_backup_*.tar.gz" -mtime +${RETENTION_DAYS} -delete
+
+# Log
+echo "$(date '+%Y-%m-%d %H:%M:%S') - Backup completed: ${BACKUP_FILE}" >> /var/log/jenkins_backup.log
+
+# Verify backup
+if [ -f "${BACKUP_FILE}" ]; then
+    SIZE=$(du -h "${BACKUP_FILE}" | cut -f1)
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - Backup size: ${SIZE}" >> /var/log/jenkins_backup.log
+else
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - ERROR: Backup failed!" >> /var/log/jenkins_backup.log
+    exit 1
+fi
