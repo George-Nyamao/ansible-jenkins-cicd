@@ -13,6 +13,12 @@ Complete Jenkins CI/CD infrastructure automation using Ansible - from installati
 - ✅ Security hardening
 - ✅ Integration with Git, Docker, and Ansible
 
+## 🔗 Connect With Me
+
+[![GitHub](https://img.shields.io/badge/GitHub-George--Nyamao-181717?style=for-the-badge&logo=github)](https://github.com/George-Nyamao)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-George_Nyamao-0A66C2?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/george-nyamao-842137218/)
+[![Email](https://img.shields.io/badge/Email-gmnyamao@hotmail.com-D14836?style=for-the-badge&logo=gmail)](mailto:gmnyamao@hotmail.com)
+
 ## Project Structure
 
 ```
@@ -42,7 +48,7 @@ Complete Jenkins CI/CD infrastructure automation using Ansible - from installati
 ### 1. Clone Repository
 
 ```bash
-git clone https://github.com/yourusername/ansible-jenkins-cicd.git
+git clone https://github.com/George-Nyamao/ansible-jenkins-cicd.git
 cd ansible-jenkins-cicd
 ```
 
@@ -456,29 +462,18 @@ Distribute builds across multiple agents for parallel execution.
 - Java 11 (installed automatically)
 - Python 3.6+
 
-## Contributing
-
-Contributions welcome! Please:
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
-
-## License
-
-MIT License - see LICENSE file for details
-
 ## Support
 
-- **Issues**: [GitHub Issues](https://github.com/yourusername/ansible-jenkins-cicd/issues)
+[![GitHub Issues](https://img.shields.io/github/issues/George-Nyamao/ansible-jenkins-cicd)](https://github.com/George-Nyamao/ansible-jenkins-cicd/issues)
+[![GitHub Discussions](https://img.shields.io/badge/GitHub-Discussions-181717?style=flat&logo=github)](https://github.com/George-Nyamao/ansible-jenkins-cicd/discussions)
+
+- **Issues**: [GitHub Issues](https://github.com/George-Nyamao/ansible-jenkins-cicd/issues)
 - **Documentation**: See DEPLOYMENT.md for detailed guide
 - **Jenkins Documentation**: [jenkins.io](https://www.jenkins.io/doc/)
 
 ## Changelog
 
-### v1.0.0 (2024-01-XX)
+### v1.0.0 (2025-10-21)
 - Initial release
 - Jenkins master installation
 - Plugin management
@@ -488,17 +483,23 @@ MIT License - see LICENSE file for details
 
 ## Author
 
-**Your Name**
-- GitHub: [@yourusername](https://github.com/yourusername)
-- LinkedIn: [Your Profile](https://linkedin.com/in/yourprofile)
-- Email: your.email@example.com
+**George Nyamao**
+- GitHub: [@George-Nyamao](https://github.com/George-Nyamao)
+- LinkedIn: [George Nyamao](https://www.linkedin.com/in/george-nyamao-842137218/)
+- Email: gmnyamao@hotmail.com
 
-## Related Projects
+## Acknowledgments
 
-- [Ansible LAMP Stack](https://github.com/yourusername/ansible-lamp-stack)
-- [Ansible Docker Automation](https://github.com/yourusername/ansible-docker-automation)
-- [Ansible Kubernetes](https://github.com/yourusername/ansible-kubernetes)
+- Jenkins community
+- Ansible community
+- Contributors
 
 ---
 
 ⭐ **Star this repository if you find it helpful!**
+
+## Related Projects
+
+- [Ansible LAMP Stack](https://github.com/George-Nyamao/ansible-lamp-stack)
+- [Ansible Docker Automation](https://github.com/George-Nyamao/ansible-docker-automation)
+- [Ansible Kubernetes](https://github.com/George-Nyamao/ansible-kubernetes)
